@@ -11,11 +11,11 @@ const QuizCard = ({ quiz }) => {
     try {
       const res = await api.post(`/quizzes/fetch/${quiz._id}/start`);
       // Statuses: start, resume
-      navigate(`/student/exam/attempt/${res.data.attemptId}`);
+      navigate(`/student/quiz/attempt/${res.data.attemptId}`);
     } catch (err) {
       if (err.response?.status === 400 && err.response?.data?.attemptId) {
         // Resume if already started
-        navigate(`/student/exam/attempt/${err.response.data.attemptId}`);
+        navigate(`/student/quiz/attempt/${err.response.data.attemptId}`);
       } else {
         alert(err.response?.data?.message || "Failed to start quiz");
       }

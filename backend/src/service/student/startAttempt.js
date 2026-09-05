@@ -23,12 +23,15 @@ const startAttemptService = async ({ userID, quizID }) => {
     });
 
     if (attempt) {
+        if (attempt.endedAt) {
+            throw new Error('Attempt_Already_Submitted');
+        }
         return {
             attemptId: attempt._id,
             quizID: quiz._id,
             startedAt: attempt.startedAt,
             endTime: quiz.examConfig.endTime,
-            autoSubmit: quiz.examConfig.autoSubmit
+            autoSubmit: quiz.examConfig.autosubmit
         };
     }
 
@@ -51,7 +54,7 @@ const startAttemptService = async ({ userID, quizID }) => {
         quizID: quiz._id,
         startedAt: attempt.startedAt,
         endTime: quiz.examConfig.endTime,
-        autoSubmit: quiz.examConfig.autoSubmit
+        autoSubmit: quiz.examConfig.autosubmit
     };
 };
 module.exports = { startAttemptService };

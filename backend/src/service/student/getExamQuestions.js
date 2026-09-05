@@ -27,7 +27,7 @@ const getExamQuestionsService = async ({ attemptId, userID }) => {
     // 3. Fetch Questions (Sanitized)
     const questions = await QuestionModal.find({
         _id: { $in: qIds }
-    }).select('-correctOption -explanation'); // Exclude answers
+    }).select('-options.iscorrect'); // Exclude answers
 
     // 4. Fetch Duration (to verify)
     // 4. Calculate Remaining Duration & Fetch Answers

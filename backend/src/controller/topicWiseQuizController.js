@@ -15,8 +15,8 @@ const getQuizzesByTopicController = async (req, res) => {
         // Case-insensitive search
         const quizzes = await QuizModal.find({
             topic: { $regex: new RegExp(`^${topic}$`, 'i') },
-            quizStatus: 'live', // Assuming we only want live quizzes for students/users
-            quizType: 'normal'  // Assuming we only want normal quizzes, not exams
+            quizStatus: { $in: ['live', 'completed', 'normal', 'upcoming'] },
+            quizType: 'normal'
         }).select("-questions"); // Exclude questions for lighter response
 
         if (!quizzes || quizzes.length === 0) {

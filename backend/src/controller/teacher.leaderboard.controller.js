@@ -20,7 +20,7 @@ const teacherLeaderBoardController = async (req, res) => {
                     totalAttempts: { $sum: 1 },
                     manualSubmissions: { $sum: { $cond: [{ $eq: ["$submitReason", "manual"] }, 1, 0] } },
                     timeUpSubmissions: { $sum: { $cond: [{ $eq: ["$submitReason", "timeUp"] }, 1, 0] } },
-                    cheatinSubmissions: { $sum: { $cond: [{ $in: ["$submitReason", ["tabswitch", "copyPaste"]] }, 1, 0] } },
+                    cheatinSubmissions: { $sum: { $cond: [{ $eq: ["$submitReason", "tabswitch"] }, 1, 0] } },
 
                 }
             }]);

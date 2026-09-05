@@ -218,7 +218,7 @@ const TeacherDashboard = () => {
                       onClick={async () => {
                         if (!window.confirm("FORCE END EXAM? This will submit all active attempts immediately.")) return;
                         try {
-                          await api.put(`/quizzes/${quiz._id}/force-end`);
+                          await api.post(`/teacher/quiz/${quiz._id}/force-end`);
                           alert("Exam Ended.");
                           window.location.reload();
                         } catch (e) {

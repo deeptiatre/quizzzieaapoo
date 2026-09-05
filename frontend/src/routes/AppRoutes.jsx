@@ -253,12 +253,66 @@ const AppRoutes = () => {
       />
 
 
-      <Route path="/student/exam" element={<ExamEntry />} />
-      <Route path="/student/exam/waiting/:quizID" element={<ExamWaiting />} />
-      <Route path="/student/exam/start/:quizID" element={<ExamStart />} />
-      <Route path="/student/exam/attempt/:attemptId" element={<ExamAttempt />} />
-      <Route path="/student/exam/result/:attemptId" element={<ExamResult />} />
-      <Route path="/student/exam/leaderboard/:quizID" element={<ExamLeaderboard />} />
+      <Route
+        path="/student/exam"
+        element={
+          <PrivateRoute>
+            <RoleRoute allowedRole="student">
+              <ExamEntry />
+            </RoleRoute>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/student/exam/waiting/:quizID"
+        element={
+          <PrivateRoute>
+            <RoleRoute allowedRole="student">
+              <ExamWaiting />
+            </RoleRoute>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/student/exam/start/:quizID"
+        element={
+          <PrivateRoute>
+            <RoleRoute allowedRole="student">
+              <ExamStart />
+            </RoleRoute>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/student/exam/attempt/:attemptId"
+        element={
+          <PrivateRoute>
+            <RoleRoute allowedRole="student">
+              <ExamAttempt />
+            </RoleRoute>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/student/exam/result/:attemptId"
+        element={
+          <PrivateRoute>
+            <RoleRoute allowedRole="student">
+              <ExamResult />
+            </RoleRoute>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/student/exam/leaderboard/:quizID"
+        element={
+          <PrivateRoute>
+            <RoleRoute allowedRole="student">
+              <ExamLeaderboard />
+            </RoleRoute>
+          </PrivateRoute>
+        }
+      />
 
 
     </Routes>

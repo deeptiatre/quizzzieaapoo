@@ -1,27 +1,53 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import VCard from "../../../component/ui/VCard";
 import { Clock, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 
 const ExamWaiting = ({ exam }) => {
-  const [timeLeft, setTimeLeft] = useState(
-    Math.floor((new Date(exam.startTime) - new Date()) / 1000)
-  );
+  const navigate = useNavigate();
+  const redirectedRef = useRef(false);
+
+  const getRemainingSeconds = () => {
+    if (!exam?.startTime) return 0;
+    const diff = Math.floor((new Date(exam.startTime).getTime() - Date.now()) / 1000);
+    return diff > 0 ? diff : 0;
+  };
+
+  const [timeLeft, setTimeLeft] = useState(getRemainingSeconds);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((t) => t - 1);
-    }, 1000);
+    if (!exam?.quizID) return;
+
+    const checkTimeAndRedirect = () => {
+      if (redirectedRef.current) return;
+      const remaining = getRemainingSeconds();
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        redirectedRef.current = true;
+        navigate(`/student/exam/start/${exam.quizID}`, { replace: true });
+      }
+    };
+
+    // Check immediately
+    checkTimeAndRedirect();
+
+    const timer = setInterval(checkTimeAndRedirect, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [exam, navigate]);
 
-  if (timeLeft <= 0) return (
-    <VCard className="text-center p-8 bg-v-bg-card border-2 border-v-green-primary">
-      <h2 className="text-2xl font-extrabold text-v-green-primary mb-2 animate-bounce">Exam is starting...</h2>
-      <p className="text-v-text-muted font-bold">Please wait while we redirect you.</p>
-    </VCard>
-  );
+  if (timeLeft <= 0) {
+    return (
+      <div className="max-w-md mx-auto">
+        <VCard className="text-center p-8 bg-v-bg-card border-2 border-v-green-primary">
+          <h2 className="text-2xl font-extrabold text-v-green-primary mb-2 animate-bounce">Exam is starting...</h2>
+          <p className="text-v-text-muted font-bold">Redirecting you to the exam now.</p>
+        </VCard>
+      </div>
+    );
+  }
 
   return (
     <VCard className="text-center p-10 max-w-lg mx-auto border-2 border-v-border-color">
@@ -50,14 +76,17 @@ const ExamWaiting = ({ exam }) => {
         </div>
       </div>
 
-      <div className="bg-v-bg-main rounded-xl p-4 flex items-center justify-center gap-3">
-        <Calendar size={20} className="text-v-blue-primary" />
-        <span className="text-v-text-main font-bold">
-          Starts at: {new Date(exam.startTime).toLocaleTimeString()}
-        </span>
-      </div>
+      {exam?.startTime && (
+        <div className="bg-v-bg-main rounded-xl p-4 flex items-center justify-center gap-3">
+          <Calendar size={20} className="text-v-blue-primary" />
+          <span className="text-v-text-main font-bold">
+            Starts at: {new Date(exam.startTime).toLocaleTimeString()}
+          </span>
+        </div>
+      )}
     </VCard>
   );
 };
 
 export default ExamWaiting;
+

@@ -25,6 +25,9 @@ const ExamCodeForm = ({ setExamStatus, setExamData }) => {
       if (data.Status === "waiting") {
         setExamStatus("waiting");
         setExamData(data);
+      } else if (data.Status === "resume" && data.attemptId) {
+        setExamStatus("live");
+        navigate(`/student/exam/attempt/${data.attemptId}`);
       } else if (data.Status === "start" || data.Status === "resume") {
         setExamStatus("live");
         navigate(`/student/exam/start/${data.quizID}`);

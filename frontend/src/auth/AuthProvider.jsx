@@ -11,10 +11,9 @@ const AuthProvider = ({ children }) => {
       const res = await api.get("/profile/getprofile");
       const userData = res.data.user || res.data;
       setUser(userData);
-      return userData
+      return userData;
     } catch {
       setUser(null);
-      localStorage.removeItem("token");
     } finally {
       setLoading(false);
     }
@@ -25,7 +24,6 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await api.post("/auth/login", data);
       setUser(res.data.user); // Update user
-      localStorage.setItem("token", res.data.token);
       return res.data.user;
     } finally {
       setLoading(false);      // Stop loading
@@ -38,7 +36,6 @@ const AuthProvider = ({ children }) => {
     const res = await api.post("/auth/register", data);
     const user = res.data.user;  // ← use backend returned user
     setUser(user);
-    localStorage.setItem("token", res.data.token);
     return user;
   };
 
@@ -49,7 +46,6 @@ const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Logout failed", error);
     }
-    localStorage.removeItem("token");
     setUser(null);
   };
 

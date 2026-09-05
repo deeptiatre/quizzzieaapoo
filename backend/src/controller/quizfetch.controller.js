@@ -1,15 +1,14 @@
 const attemptModal = require("../modals/attempt.modal");
 const QuestionModal = require("../modals/question.modal");
 const QuizModal = require("../modals/quiz.modal");
+const examCompletionJob = require("../service/exam/jobEamCompletion.service");
 
-// --------------------------------------------------
-// 1️⃣ GET ALL QUIZZES
-// --------------------------------------------------
 // --------------------------------------------------
 // 1️⃣ GET ALL QUIZZES (Normal & Live Only)
 // --------------------------------------------------
 const getAllQuizesController = async (req, res) => {
     try {
+        await examCompletionJob();
         const userId = req.user._id;
 
         // 1. Fetch all normal & live quizzes
@@ -111,19 +110,6 @@ const StartQuizController = async (req, res) => {
     try {
         const { quizID } = req.params;
 
-        const existingAttempt = await attemptModal.findOne({
-            userID: req.user._id,
-            quizID: quizID,
-            endedAt: null
-        });
-
-        if (existingAttempt) {
-            return res.status(400).json({
-                message: "You already started this quiz",
-                attemptId: existingAttempt._id,
-            });
-        }
-
         let questions = await QuestionModal.find({ quizID }).select("_id");
 
         if (questions.length === 0) {
@@ -132,16 +118,45 @@ const StartQuizController = async (req, res) => {
             });
         }
 
-
         questions = questions.sort(() => Math.random() - 0.5);
-
         const questionIds = questions.map((question) => question._id);
+
+        const existingAttempt = await attemptModal.findOne({
+            userID: req.user._id,
+            quizID: quizID
+        });
+
+        if (existingAttempt) {
+            if (!existingAttempt.endedAt) {
+                // Resume ongoing attempt
+                return res.status(400).json({
+                    message: "You already started this quiz",
+                    attemptId: existingAttempt._id,
+                });
+            }
+
+            // Re-take: Reset previous completed attempt
+            existingAttempt.questionIds = questionIds;
+            existingAttempt.startedAt = Date.now();
+            existingAttempt.endedAt = null;
+            existingAttempt.score = 0;
+            existingAttempt.answers = [];
+            existingAttempt.tabSwitchCount = 0;
+            existingAttempt.autoSubmitted = false;
+            existingAttempt.submitReason = "manual";
+            await existingAttempt.save();
+
+            return res.status(200).json({
+                message: "quiz restarted successfully",
+                attemptId: existingAttempt._id,
+            });
+        }
 
         const newAttempt = await attemptModal.create({
             userID: req.user._id,
             quizID,
             questionIds: questionIds,
-            startedAt: Date.now(), // ✔ FIXED spelling
+            startedAt: Date.now(),
         });
 
         return res.status(200).json({

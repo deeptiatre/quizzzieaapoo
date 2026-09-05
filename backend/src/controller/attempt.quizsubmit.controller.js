@@ -7,15 +7,15 @@ const { submitAttemptService } = require("../service/attempt/submitAttemptServic
 const submitQuizController = async (req, res) => {
   try {
     const { attemptId } = req.params;
-    const { answers } = req.body;
+    const { answers, submitReason } = req.body;
 
 
     const attempt = await submitAttemptService({
       attemptId,
       userId: req.user._id,
       answers,
-      submitReason: "manual",
-      autoSubmitted: false
+      submitReason: submitReason === "time" ? "timeUp" : "manual",
+      autoSubmitted: submitReason === "time"
     })
 
     return res.status(200).json({
@@ -73,7 +73,7 @@ const getAttemptQuestions = async (req, res) => {
     const attempt = await attemptmodal.findById(attemptId)
       .populate({
         path: "questionIds",
-        select: "-options.isCorrect", // hide correct answers
+        select: "-options.iscorrect", // hide correct answers
       });
 
     if (!attempt) {

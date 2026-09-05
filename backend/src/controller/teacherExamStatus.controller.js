@@ -4,8 +4,8 @@ const { examStateResolver } = require("../service/exam/examStateResolver.service
 
 const teacherExamStatusController = async (req, res) => {
     try {
-        const { qizId } = req.params;
-        const quiz = await QuizModal.findById(qizId);
+        const { quizID } = req.params;
+        const quiz = await QuizModal.findById(quizID);
         if (!quiz) {
             return res.status(404).json({
                 message: "Quiz not found"

@@ -8,7 +8,7 @@ const {
     getQuizByIdController
 } = require('../controller/quiz.controller');
 const { publishQuizController } = require('../controller/publishQuizController');
-const { deleteQuizController, forceEndExamController } = require('../controller/quizManageController');
+const { deleteQuizController } = require('../controller/quizManageController');
 const checkRoleMiddleware = require('../middleware/role.auth.middleware');
 
 
@@ -21,7 +21,6 @@ quizRouter.put('/:questionID/update', authmiddleware, checkRoleMiddleware, updat
 quizRouter.delete('/:questionID/delete', authmiddleware, checkRoleMiddleware, deleteQuestionContoller)
 quizRouter.put('/:quizID/publish', authmiddleware, checkRoleMiddleware, publishQuizController)
 quizRouter.delete('/:quizID', authmiddleware, checkRoleMiddleware, deleteQuizController) // Delete Quiz
-quizRouter.put('/:quizID/force-end', authmiddleware, checkRoleMiddleware, forceEndExamController) // Force End Exam
 
 module.exports = quizRouter;
 

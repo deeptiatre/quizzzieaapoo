@@ -15,8 +15,7 @@ const EnableExam = () => {
     startTime: "",
     endTime: "",
     duration: "",
-    tabSwitchLimit: 3,
-    negativeMarking: false
+    tabSwitchLimit: 3
   });
 
   const [loading, setLoading] = useState(false);
@@ -186,18 +185,6 @@ const EnableExam = () => {
             icon={<ShieldAlert size={18} />}
             placeholder="Default: 3"
           />
-
-          <div className="p-4 rounded-xl bg-v-bg-main border-2 border-v-border-color flex items-center gap-4">
-            <input
-              type="checkbox"
-              name="negativeMarking"
-              checked={form.negativeMarking}
-              onChange={handleChange}
-              id="neg-mark"
-              className="w-5 h-5 accent-v-blue-primary bg-v-bg-card border-v-border-color rounded focus:ring-0 cursor-pointer"
-            />
-            <label htmlFor="neg-mark" className="font-bold text-white cursor-pointer select-none">Enable Negative Marking</label>
-          </div>
 
           <div className="flex gap-4 pt-4 border-t-2 border-v-border-color">
             <VButton

@@ -9,6 +9,7 @@ const QuizList = () => {
     const [quizzes, setQuizzes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedDifficulty, setSelectedDifficulty] = useState('All');
+    const [selectedTopic, setSelectedTopic] = useState('All');
     const [search, setSearch] = useState("");
 
     useEffect(() => {
@@ -22,11 +23,12 @@ const QuizList = () => {
         });
     }, []);
 
-    // Filter quizzes based on selected difficulty
+    // Filter quizzes based on selected difficulty, search, and topic in real-time
     const filteredQuizzes = quizzes.filter(q => {
-        const matchesDiff = selectedDifficulty === 'All' || q.diffcultylevel === selectedDifficulty.toLowerCase();
-        const matchesSearch = q.title.toLowerCase().includes(search.toLowerCase());
-        return matchesDiff && matchesSearch;
+        const matchesDiff = selectedDifficulty === 'All' || q.diffcultylevel?.toLowerCase() === selectedDifficulty.toLowerCase();
+        const matchesSearch = !search.trim() || q.title?.toLowerCase().includes(search.toLowerCase()) || q.topic?.toLowerCase().includes(search.toLowerCase());
+        const matchesTopic = selectedTopic === 'All' || q.topic?.trim().toLowerCase() === selectedTopic.toLowerCase();
+        return matchesDiff && matchesSearch && matchesTopic;
     });
 
     const containerVariants = {
@@ -88,14 +90,18 @@ const QuizList = () => {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-                <TopicBar quizzes={quizzes} />
+                <TopicBar
+                    quizzes={quizzes}
+                    selectedTopic={selectedTopic}
+                    onSelectTopic={setSelectedTopic}
+                />
             </motion.div>
 
             {filteredQuizzes.length === 0 ? (
                 <motion.div variants={itemVariants} className="text-center py-20 bg-v-bg-card rounded-2xl border-2 border-dashed border-v-border-color">
                     <p className="text-v-text-muted font-bold text-lg">No quizzes found matching your filters.</p>
                     <button
-                        onClick={() => { setSelectedDifficulty('All'); setSearch('') }}
+                        onClick={() => { setSelectedDifficulty('All'); setSelectedTopic('All'); setSearch('') }}
                         className="mt-4 text-v-blue-primary font-bold hover:underline"
                     >
                         Clear Filters

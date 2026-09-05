@@ -1,4 +1,5 @@
 const attemptmodal = require("../modals/attempt.modal");
+const QuizModal = require("../modals/quiz.modal");
 
 
 const attemptResultController = async (req, res) => {
@@ -33,6 +34,13 @@ const attemptResultController = async (req, res) => {
             console.log(`[ResultDebug] Attempt not submitted yet.`);
             return res.status(400).json({
                 message: "Quiz not yet submitted"
+            });
+        }
+
+        const quiz = await QuizModal.findById(attempt.quizID).select('publishResults quizType');
+        if (quiz?.quizType === 'exam' && quiz.publishResults === false) {
+            return res.status(403).json({
+                message: "Results have not been released yet by your teacher."
             });
         }
 

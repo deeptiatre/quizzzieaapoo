@@ -65,6 +65,10 @@ const quizSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    isPractice: {
+        type: Boolean,
+        default: false
+    },
 }, {
     timestamps: true,
 })

@@ -28,7 +28,7 @@ const RecentAttempts = ({ attempts }) => {
                   </td>
                   <td className="px-4 py-4">
                     <span className={`px-2 py-1 rounded-lg text-xs font-black uppercase tracking-wide border-b-2
-                      ${a.status === 'Pass' ? 'bg-v-green-primary text-v-bg-main border-v-green-shadow' : 'bg-v-red-error text-white border-v-red-shadow'}
+                      ${a.status === 'Submitted' ? 'bg-v-green-primary text-v-bg-main border-v-green-shadow' : 'bg-v-yellow-warning text-v-bg-main border-v-yellow-shadow'}
                     `}>
                       {a.status}
                     </span>

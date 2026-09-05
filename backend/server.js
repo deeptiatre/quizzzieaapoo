@@ -14,10 +14,15 @@ const { examStudentroutes } = require('./src/routes/student/student.routes');
 const { profileRouter } = require('./src/routes/profile/getUpdateProfile');
 const { studentDashboardRouter } = require('./src/routes/dashboard/studentDashboard');
 const { teacherDashboardRouter } = require('./src/routes/dashboard/teacherDashboard');
+const examCompletionJob = require('./src/service/exam/jobEamCompletion.service');
 
 const app = express();
 
 connectDB();
+
+// Run exam completion check on startup and every 30 seconds
+examCompletionJob();
+setInterval(examCompletionJob, 30000);
 
 app.use(cors({
   origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],

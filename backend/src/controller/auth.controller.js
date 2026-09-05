@@ -31,9 +31,9 @@ const registerController = async (req, res) => {
 
         let token = jwt.sign({ userId: newuser._id, role: newuser.role }, process.env.JWT_SECRET, { expiresIn: '1d' })
         res.cookie("token", token, {
-            httpOnly: false,
-            secure: false, // set to true in production with HTTPS
-            sameSite: 'lax',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
         if (!token) {
@@ -44,8 +44,7 @@ const registerController = async (req, res) => {
 
         return res.status(201).json({
             message: "user registered successfully",
-            user: newuser,
-            token
+            user: newuser
         })
     } catch (error) {
         console.log("error in register controller", error);
@@ -81,7 +80,12 @@ const loginController = async (req, res) => {
             })
         }
         let token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' })
-        res.cookie("token", token);
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 24 * 60 * 60 * 1000 // 1 day
+        });
         if (!token) {
             return res.status(500).json({
                 message: "error in token generation"
@@ -90,8 +94,7 @@ const loginController = async (req, res) => {
 
         return res.status(200).json({
             message: "login successful",
-            user: user,
-            token
+            user: user
         })
     } catch (error) {
         console.log("error in login controller", error);

@@ -12,7 +12,7 @@ const autoSubmitService = async (quizID) => {
         await finalizAttempt({
             attempt,
             answers: attempt.answers,
-            submitReason: "timeup",
+            submitReason: "timeUp",
             autoSubmitted: true
         })
     }

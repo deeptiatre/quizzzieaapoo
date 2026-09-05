@@ -77,31 +77,80 @@ const QuizResult = () => {
             </motion.div>
 
             <div className="space-y-6">
-                <h2 className="text-2xl font-extrabold text-white border-b-2 border-v-border-color pb-4">Answers</h2>
-                {data.answers.map((ans, idx) => (
-                    <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                    >
-                        <VCard className="p-6">
-                            <h3 className="font-bold text-lg text-white mb-2">Q{idx + 1}: {ans.question}</h3>
-                            <div className="flex flex-col gap-2 mt-4 text-sm">
-                                <div className="flex justify-between p-3 rounded-xl bg-v-bg-main border-2 border-v-border-color">
-                                    <span className="text-v-text-muted font-bold uppercase text-xs">Your Answer</span>
-                                    <span className={`font-bold ${ans.isCorrect ? 'text-v-green-primary' : 'text-v-red-error'}`}>
-                                        {ans.selectedOption || "Skipped"}
+                <h2 className="text-2xl font-extrabold text-white border-b-2 border-v-border-color pb-4">Detailed Review</h2>
+                {data.answers.map((ans, idx) => {
+                    const selectedOpt = ans.options?.find(opt => opt._id?.toString() === ans.selectedOption?.toString());
+                    const correctOpt = ans.options?.find(opt => opt.iscorrect);
+
+                    return (
+                        <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.05 }}
+                        >
+                            <VCard className="p-6">
+                                <div className="flex gap-4">
+                                    <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-v-bg-main rounded-full font-black text-white border-2 border-v-border-color">
+                                        {idx + 1}
                                     </span>
+                                    <div className="flex-grow space-y-3">
+                                        <h3 className="font-bold text-lg text-white">{ans.question}</h3>
+
+                                        {ans.options && ans.options.length > 0 ? (
+                                            <div className="space-y-2 mt-3">
+                                                {ans.options.map((opt, i) => {
+                                                    const isSelected = opt._id?.toString() === ans.selectedOption?.toString();
+                                                    const isCorrect = opt.iscorrect;
+
+                                                    let styleClass = "bg-v-bg-main border-v-border-color text-v-text-muted";
+                                                    if (isCorrect) {
+                                                        styleClass = "bg-v-green-primary/20 border-v-green-primary text-v-green-primary font-bold";
+                                                    } else if (isSelected && !isCorrect) {
+                                                        styleClass = "bg-v-red-error/20 border-v-red-error text-v-red-error font-bold";
+                                                    }
+
+                                                    return (
+                                                        <div
+                                                            key={i}
+                                                            className={`p-3 rounded-xl border-2 flex justify-between items-center transition-colors ${styleClass}`}
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-sm">{opt.text}</span>
+                                                                {isSelected && (
+                                                                    <span className="text-xs px-2 py-0.5 rounded-md uppercase font-black bg-white/10 text-white">
+                                                                        Your Choice
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            {isCorrect && <CheckCircle size={18} className="text-v-green-primary" />}
+                                                            {isSelected && !isCorrect && <XCircle size={18} className="text-v-red-error" />}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <div className="p-3 rounded-xl bg-v-bg-main border-2 border-v-border-color">
+                                                <p className="text-sm">
+                                                    <strong className="text-v-text-muted">Your Answer: </strong>
+                                                    <span className={ans.isCorrect ? "text-v-green-primary font-bold" : "text-v-red-error font-bold"}>
+                                                        {selectedOpt?.text || ans.selectedOption || "Skipped"}
+                                                    </span>
+                                                </p>
+                                                {!ans.isCorrect && correctOpt && (
+                                                    <p className="text-sm mt-1">
+                                                        <strong className="text-v-text-muted">Correct Answer: </strong>
+                                                        <span className="text-v-green-primary font-bold">{correctOpt.text}</span>
+                                                    </p>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className={`flex items-center gap-2 mt-2 font-bold ${ans.isCorrect ? 'text-v-green-primary' : 'text-v-red-error'}`}>
-                                    {ans.isCorrect ? <CheckCircle size={18} /> : <XCircle size={18} />}
-                                    <span>{ans.isCorrect ? "Correct!" : "Incorrect"}</span>
-                                </div>
-                            </div>
-                        </VCard>
-                    </motion.div>
-                ))}
+                            </VCard>
+                        </motion.div>
+                    );
+                })}
             </div>
         </div>
     );
